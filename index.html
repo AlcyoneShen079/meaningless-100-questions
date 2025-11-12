@@ -510,6 +510,8 @@
         const answers = new Array(100).fill('');
         const totalPages = 10;
         let userName = '';
+        // 网站URL - 请根据您的实际部署地址修改
+        const siteUrl = "https://alcyoneshen079.github.io/meaningless-100-questions/";
 
         // 初始化页面
         document.addEventListener('DOMContentLoaded', function() {
@@ -768,18 +770,27 @@
             html2canvas(resultCard, {
                 backgroundColor: null,
                 scale: 2,
-                useCORS: true
+                useCORS: true,
+                logging: true,
+                allowTaint: true
             }).then(canvas => {
                 // 隐藏加载动画
                 loader.style.display = 'none';
                 
-                const image = canvas.toDataURL('image/png');
-                const link = document.createElement('a');
-                link.download = `${userName}-无意义100问.png`;
-                link.href = image;
-                link.click();
-                
-                showToast('图片已生成并下载');
+                try {
+                    const image = canvas.toDataURL('image/png');
+                    const link = document.createElement('a');
+                    link.download = `${userName}-无意义100问.png`;
+                    link.href = image;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    showToast('图片已生成并下载');
+                } catch (error) {
+                    console.error('下载图片失败:', error);
+                    showToast('下载图片失败，请重试');
+                }
             }).catch(error => {
                 // 隐藏加载动画
                 loader.style.display = 'none';
@@ -790,13 +801,14 @@
 
         // 复制链接
         function copyLink() {
-            const url = `${window.location.origin}${window.location.pathname}?name=${encodeURIComponent(userName)}`;
+            const url = `${siteUrl}?name=${encodeURIComponent(userName)}`;
             
             // 使用现代 Clipboard API
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(url).then(() => {
                     showToast('链接已复制到剪贴板');
                 }).catch(err => {
+                    console.error('复制失败:', err);
                     fallbackCopyTextToClipboard(url);
                 });
             } else {
@@ -808,20 +820,31 @@
         function fallbackCopyTextToClipboard(text) {
             const textArea = document.createElement('textarea');
             textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.opacity = 0;
             document.body.appendChild(textArea);
             textArea.select();
             try {
                 document.execCommand('copy');
                 showToast('链接已复制到剪贴板');
             } catch (err) {
-                showToast('复制失败，请手动复制链接');
+                console.error('复制失败:', err);
+                showToast('复制失败，请手动复制链接: ' + text);
             }
             document.body.removeChild(textArea);
         }
 
         // 下载文字版
         function downloadText() {
+            // 生成日期字符串 (YYMMDD格式)
+            const now = new Date();
+            const year = now.getFullYear().toString().slice(-2);
+            const month = (now.getMonth() + 1).toString().padStart(2, '0');
+            const day = now.getDate().toString().padStart(2, '0');
+            const dateString = `${year}${month}${day}`;
+            
             let textContent = `${userName}的无意义100问答卷\n\n`;
+            textContent += `测试链接: ${siteUrl}?name=${encodeURIComponent(userName)}\n\n`;
             
             for (let i = 0; i < questions.length; i++) {
                 textContent += `${i+1}. ${questions[i]}\n`;
@@ -829,13 +852,15 @@
             }
             
             textContent += `—— ${userName}的无意义答卷\n`;
-            textContent += `生成时间: ${new Date().toLocaleString()}`;
+            textContent += `生成时间: ${new Date().toLocaleString('zh-CN')}`;
             
             const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = `${userName}-无意义100问.txt`;
+            link.download = `${dateString}-${userName}-无意义100问.txt`;
+            document.body.appendChild(link);
             link.click();
+            document.body.removeChild(link);
             
             showToast('文字版已下载');
         }
