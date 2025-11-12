@@ -330,6 +330,24 @@
             margin-top: 5px;
             display: none;
         }
+        
+        /* 结果页面样式 */
+        .result-qa-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 8px;
+            text-align: left;
+        }
+        
+        .result-question {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .result-answer {
+            color: #555;
+        }
     </style>
 </head>
 <body>
@@ -718,34 +736,23 @@
             
             resultCard.appendChild(title);
             
-            // 随机选择5个问题和答案显示
-            const selectedIndices = [];
-            while (selectedIndices.length < 5) {
-                const randomIndex = Math.floor(Math.random() * 100);
-                if (answers[randomIndex] && !selectedIndices.includes(randomIndex)) {
-                    selectedIndices.push(randomIndex);
-                }
-            }
-            
-            selectedIndices.forEach(index => {
+            // 显示所有问题和答案
+            for (let i = 0; i < questions.length; i++) {
                 const qaItem = document.createElement('div');
-                qaItem.style.marginBottom = '15px';
-                qaItem.style.padding = '10px';
-                qaItem.style.background = 'rgba(255,255,255,0.7)';
-                qaItem.style.borderRadius = '8px';
+                qaItem.className = 'result-qa-item';
                 
                 const question = document.createElement('div');
-                question.style.fontWeight = 'bold';
-                question.style.marginBottom = '5px';
-                question.textContent = `${index + 1}. ${questions[index]}`;
+                question.className = 'result-question';
+                question.textContent = `${i + 1}. ${questions[i]}`;
                 
                 const answer = document.createElement('div');
-                answer.textContent = answers[index];
+                answer.className = 'result-answer';
+                answer.textContent = answers[i] || '未回答';
                 
                 qaItem.appendChild(question);
                 qaItem.appendChild(answer);
                 resultCard.appendChild(qaItem);
-            });
+            }
             
             const signature = document.createElement('div');
             signature.style.marginTop = '20px';
@@ -772,7 +779,8 @@
                 scale: 2,
                 useCORS: true,
                 logging: true,
-                allowTaint: true
+                allowTaint: true,
+                scrollY: -window.scrollY
             }).then(canvas => {
                 // 隐藏加载动画
                 loader.style.display = 'none';
@@ -844,7 +852,8 @@
             const dateString = `${year}${month}${day}`;
             
             let textContent = `${userName}的无意义100问答卷\n\n`;
-            textContent += `测试链接: ${siteUrl}?name=${encodeURIComponent(userName)}\n\n`;
+            textContent += `测试链接: ${siteUrl}?name=${encodeURIComponent(userName)}\n`;
+            textContent += `生成时间: ${new Date().toLocaleString('zh-CN')}\n\n`;
             
             for (let i = 0; i < questions.length; i++) {
                 textContent += `${i+1}. ${questions[i]}\n`;
@@ -852,7 +861,6 @@
             }
             
             textContent += `—— ${userName}的无意义答卷\n`;
-            textContent += `生成时间: ${new Date().toLocaleString('zh-CN')}`;
             
             const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
             const link = document.createElement('a');
