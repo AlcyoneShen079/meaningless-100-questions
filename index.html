@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>无意义100问 - 在线测试</title>
+    <meta name="description" content="回答这些无意义的问题，发现不一样的自己">
+    <meta property="og:title" content="无意义100问 - 在线测试">
+    <meta property="og:description" content="回答这些无意义的问题，发现不一样的自己">
+    <meta property="og:type" content="website">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        :root {
+            --primary-color: #ff6b6b;
+            --secondary-color: #4ecdc4;
+            --dark-color: #333;
+            --light-color: #f8f9fa;
+            --gray-color: #6c757d;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--dark-color);
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            padding: 30px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2.2em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: var(--gray-color);
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .question {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed #e0e0e0;
+        }
+        
+        .question-number {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            margin-right: 10px;
+            font-size: 0.9em;
+        }
+        
+        .question-text {
+            font-size: 1.1em;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            resize: vertical;
+            min-height: 80px;
+            font-size: 1em;
+            transition: border 0.3s;
+        }
+        
+        textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.2);
+        }
+        
+        textarea.empty {
+            border-color: #ff4757;
+            background-color: #fff9f9;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary-color);
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        button:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .prev-btn {
+            background: var(--gray-color);
+        }
+        
+        .prev-btn:hover {
+            background: #5a6268;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: var(--primary-color);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--gray-color);
+        }
+        
+        #result-container {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        #result-image {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+        }
+        
+        .share-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .share-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--light-color);
+            color: var(--dark-color);
+            border: 1px solid #ddd;
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .share-btn:hover {
+            background: #e9ecef;
+        }
+        
+        #name-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        #name-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+        
+        .welcome-text {
+            text-align: center;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            color: #555;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #888;
+            font-size: 0.9em;
+        }
+        
+        /* 移动端优化 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                border-radius: 15px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .navigation {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            .share-buttons {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+            }
+            
+            .question-text {
+                font-size: 1em;
+            }
+        }
+        
+        /* 加载动画 */
+        .loader {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .loader-spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 提示信息 */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .empty-warning {
+            color: #ff4757;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>无意义100问</h1>
+        <div class="subtitle">回答这些无意义的问题，发现不一样的自己</div>
+        
+        <!-- 欢迎页面 -->
+        <div id="welcome-page" class="page active">
+            <div class="welcome-text">
+                <p>欢迎参加"无意义100问"测试！</p>
+                <p>这里没有标准答案，只有最真实的你。</p>
+                <p>请放松心情，跟随直觉回答这些问题。</p>
+                <p>完成测试后，你可以生成专属卡片分享给朋友。</p>
+            </div>
+            
+            <div style="text-align: center;">
+                <label for="name-input">请输入你的名字：</label>
+                <input type="text" id="name-input" placeholder="你的昵称">
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button id="start-btn">开始测试</button>
+            </div>
+        </div>
+        
+        <!-- 问题页面 -->
+        <div id="question-pages">
+            <!-- 问题页面将通过JavaScript动态生成 -->
+        </div>
+        
+        <!-- 结果页面 -->
+        <div id="result-page" class="page">
+            <div id="result-container">
+                <h2>测试完成！</h2>
+                <p>恭喜你完成了无意义100问</p>
+                
+                <div class="loader">
+                    <div class="loader-spinner"></div>
+                    <p>正在生成图片...</p>
+                </div>
+                
+                <div id="result-content">
+                    <!-- 结果内容将通过JavaScript动态生成 -->
+                </div>
+                
+                <div class="share-buttons">
+                    <button id="screenshot-btn" class="share-btn">
+                        <span>生成分享图片</span>
+                    </button>
+                    <button id="copy-link-btn" class="share-btn">
+                        <span>复制测试链接</span>
+                    </button>
+                    <button id="download-text-btn" class="share-btn">
+                        <span>下载文字版</span>
+                    </button>
+                </div>
+                
+                <button id="restart-btn" style="margin-top: 20px;">重新测试</button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>无意义100问 by Alcyone | 小红书@陆生</p>
+            <p>本页面无需安装，可直接分享</p>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // 问题数据
+        const questions = [
+            "下雪天还是下雨天",
+            "喜欢的一个气味",
+            "说一个你最疯狂的幻想",
+            "四选一：春天/夏天/秋天/冬天",
+            "你对自己的定位",
+            "有什么很遗憾的事情吗",
+            "怕鬼吗",
+            "说出一项你很拿手的技能",
+            "早睡觉or熬夜党",
+            "最不想成为的一种人",
+            "近期让你开心的三件小事",
+            "想让圣诞老人送给你的一件礼物",
+            "幸运数字是什么",
+            "说一句无厘头的话吧",
+            "第一次心动的时间",
+            "很容易让你流泪的事情是什么",
+            "把自己比作一种鸟类",
+            "推荐一首你喜欢的歌吧",
+            "周末出行 你选博物馆/公园/商场？",
+            "说三个雷点",
+            "此刻，下一件你要做的事情是什么",
+            "森林or海洋",
+            "考过最低分数的学科",
+            "读过最悲伤的一个童话故事",
+            "最想旅行的地方",
+            "你更会思考 过去/当下/未来",
+            "形容一下你心中的完美晚餐",
+            "描述一个你做过的离奇的梦",
+            "形式主义or实用主义",
+            "可以查看任何一个事实，你选择？",
+            "你容易入睡吗",
+            "如果当初（自由发挥）",
+            "你认为的活着的意义",
+            "最喜欢的一种花",
+            "谈谈你的情感观",
+            "近期目标",
+            "能思考决不动笔or能动笔决不思考",
+            "你想活到几岁",
+            "一件愿意一直坚持下去的事情",
+            "最讨厌做的一类家务",
+            "二十四节气中最喜欢的一个",
+            "乐观or悲观主义者",
+            "想和谁一起跨年",
+            "向大家推荐几款好吃的小零食",
+            "有什么觉得很浪漫的事情吗",
+            "喜欢听的音乐类型是什么",
+            "说说你最平常一天的作息",
+            "说出一个看完感触很深的电影",
+            "你的性取向是",
+            "有很挂念的人吗",
+            "对未来的规划是什么",
+            "最希望收到的生日礼物是什么",
+            "现在心情如何",
+            "你的遗言想说点什么",
+            "做过最冲动的事情",
+            "日久生情or一见钟情",
+            "学生时代最快乐的三件事",
+            "你认为自己脑袋是由什么组成的",
+            "和过去的自己说几句话",
+            "有喜欢收集什么东西的习惯吗",
+            "朋友对你来说的意义",
+            "把爱具象化描述成三件物品",
+            "最喜欢的三种食物原材料",
+            "夏夜看星星or冬日堆雪人",
+            "上一次笑是什么时候",
+            "你的MBTI是什么",
+            "距离下一年还有几天",
+            "一部可以n刷的番/动漫",
+            "假如有一天你可以飞了，是因为？",
+            "元素五选一：金/木/水/火/风",
+            "现在饿吗",
+            "让你印象最深刻的一个瞬间",
+            "如果可以，你想穿越到哪个年代",
+            "描述一下理想的被单样式",
+            "喜欢的三种颜色",
+            "分享一个社死经历吧",
+            "怕冷or怕热",
+            "描述一个你认为很自由的画面",
+            "有什么恐惧症吗（巨物、深海）",
+            "你名字的寓意是什么",
+            "使用最多的软件是什么",
+            "所居住的城市给你的印象是什么",
+            "和恋人相处的理想状态",
+            "和朋友相处的理想状态",
+            "说说你所渴望发生的一个时刻",
+            "窗外天气怎么样",
+            "甜粽子or咸粽子",
+            "分享一个生活中温暖/美好的瞬间",
+            "三个意象描述自己",
+            "为现在努力的程度打个分数1-10",
+            "你认为人生的终极目标是什么",
+            "喝奶茶的甜度和冰度",
+            "描述一个让你感到舒适的空间",
+            "日出or日落更让你心动",
+            "现在几点啦",
+            "分享一段独特的经历吧",
+            "你能够很好的接受离别吗",
+            "想好下一顿吃什么了吗",
+            "描述一下你的理想型",
+            "相信爱会永存吗"
+        ];
+
+        // 当前页面和用户答案
+        let currentPage = 0;
+        const answers = new Array(100).fill('');
+        const totalPages = 10;
+        let userName = '';
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            // 尝试从URL参数获取用户名
+            const urlParams = new URLSearchParams(window.location.search);
+            const nameFromUrl = urlParams.get('name');
+            if (nameFromUrl) {
+                document.getElementById('name-input').value = decodeURIComponent(nameFromUrl);
+            }
+            
+            // 生成问题页面
+            generateQuestionPages();
+            
+            // 开始测试按钮
+            document.getElementById('start-btn').addEventListener('click', function() {
+                userName = document.getElementById('name-input').value.trim();
+                if (!userName) {
+                    showToast('请输入你的名字');
+                    return;
+                }
+                showPage(0);
+            });
+            
+            // 重新测试按钮
+            document.getElementById('restart-btn').addEventListener('click', function() {
+                // 重置答案
+                answers.fill('');
+                currentPage = 0;
+                showPage('welcome');
+            });
+            
+            // 生成截图按钮
+            document.getElementById('screenshot-btn').addEventListener('click', generateScreenshot);
+            
+            // 复制链接按钮
+            document.getElementById('copy-link-btn').addEventListener('click', copyLink);
+            
+            // 下载文字版按钮
+            document.getElementById('download-text-btn').addEventListener('click', downloadText);
+        });
+
+        // 生成问题页面
+        function generateQuestionPages() {
+            const container = document.getElementById('question-pages');
+            
+            for (let pageIndex = 0; pageIndex < totalPages; pageIndex++) {
+                const page = document.createElement('div');
+                page.className = 'page question-page';
+                page.id = `page-${pageIndex}`;
+                
+                // 进度条
+                const progressBar = document.createElement('div');
+                progressBar.className = 'progress-bar';
+                const progress = document.createElement('div');
+                progress.className = 'progress';
+                progress.style.width = `${((pageIndex + 1) / totalPages) * 100}%`;
+                progressBar.appendChild(progress);
+                
+                const progressText = document.createElement('div');
+                progressText.className = 'progress-text';
+                progressText.textContent = `第 ${pageIndex + 1} 页 / 共 ${totalPages} 页`;
+                
+                page.appendChild(progressBar);
+                page.appendChild(progressText);
+                
+                // 添加问题
+                for (let i = 0; i < 10; i++) {
+                    const questionIndex = pageIndex * 10 + i;
+                    const question = document.createElement('div');
+                    question.className = 'question';
+                    
+                    const questionNumber = document.createElement('span');
+                    questionNumber.className = 'question-number';
+                    questionNumber.textContent = questionIndex + 1;
+                    
+                    const questionText = document.createElement('div');
+                    questionText.className = 'question-text';
+                    questionText.appendChild(questionNumber);
+                    questionText.appendChild(document.createTextNode(questions[questionIndex]));
+                    
+                    const textarea = document.createElement('textarea');
+                    textarea.placeholder = '请输入你的回答...';
+                    textarea.dataset.index = questionIndex;
+                    
+                    // 恢复之前填写的答案
+                    if (answers[questionIndex]) {
+                        textarea.value = answers[questionIndex];
+                    }
+                    
+                    // 监听输入变化
+                    textarea.addEventListener('input', function() {
+                        answers[this.dataset.index] = this.value;
+                        // 移除空输入警告样式
+                        this.classList.remove('empty');
+                        // 自动保存到本地存储
+                        saveToLocalStorage();
+                    });
+                    
+                    question.appendChild(questionText);
+                    question.appendChild(textarea);
+                    page.appendChild(question);
+                }
+                
+                // 导航按钮
+                const navigation = document.createElement('div');
+                navigation.className = 'navigation';
+                
+                const prevButton = document.createElement('button');
+                prevButton.className = 'prev-btn';
+                prevButton.textContent = '上一页';
+                prevButton.addEventListener('click', function() {
+                    showPage(pageIndex - 1);
+                });
+                
+                const nextButton = document.createElement('button');
+                nextButton.textContent = pageIndex === totalPages - 1 ? '提交答案' : '下一页';
+                nextButton.addEventListener('click', function() {
+                    if (validateCurrentPage(pageIndex)) {
+                        if (pageIndex === totalPages - 1) {
+                            showResults();
+                        } else {
+                            showPage(pageIndex + 1);
+                        }
+                    }
+                });
+                
+                navigation.appendChild(prevButton);
+                navigation.appendChild(nextButton);
+                page.appendChild(navigation);
+                
+                container.appendChild(page);
+            }
+            
+            // 尝试从本地存储加载数据
+            loadFromLocalStorage();
+        }
+
+        // 验证当前页面是否所有问题都已填写
+        function validateCurrentPage(pageIndex) {
+            let isValid = true;
+            const startIndex = pageIndex * 10;
+            const endIndex = startIndex + 10;
+            
+            for (let i = startIndex; i < endIndex; i++) {
+                if (!answers[i] || answers[i].trim() === '') {
+                    isValid = false;
+                    // 找到对应的textarea并添加警告样式
+                    const textarea = document.querySelector(`textarea[data-index="${i}"]`);
+                    if (textarea) {
+                        textarea.classList.add('empty');
+                        // 滚动到第一个空的问题
+                        if (isValid === false) {
+                            textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            textarea.focus();
+                        }
+                    }
+                }
+            }
+            
+            if (!isValid) {
+                showToast('请填写完本页所有问题后再继续');
+            }
+            
+            return isValid;
+        }
+
+        // 显示指定页面
+        function showPage(pageIndex) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            if (pageIndex === 'welcome') {
+                document.getElementById('welcome-page').classList.add('active');
+            } else if (pageIndex === 'result') {
+                document.getElementById('result-page').classList.add('active');
+            } else {
+                document.getElementById(`page-${pageIndex}`).classList.add('active');
+                currentPage = pageIndex;
+            }
+            
+            // 滚动到顶部
+            window.scrollTo(0, 0);
+        }
+
+        // 显示结果
+        function showResults() {
+            // 生成结果内容
+            const resultContent = document.getElementById('result-content');
+            resultContent.innerHTML = '';
+            
+            const resultCard = document.createElement('div');
+            resultCard.id = 'result-card';
+            resultCard.style.padding = '20px';
+            resultCard.style.background = 'linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%)';
+            resultCard.style.borderRadius = '15px';
+            resultCard.style.color = '#333';
+            
+            const title = document.createElement('h2');
+            title.textContent = `${userName}的无意义100问答卷`;
+            title.style.marginBottom = '20px';
+            title.style.color = '#5d4037';
+            
+            resultCard.appendChild(title);
+            
+            // 随机选择5个问题和答案显示
+            const selectedIndices = [];
+            while (selectedIndices.length < 5) {
+                const randomIndex = Math.floor(Math.random() * 100);
+                if (answers[randomIndex] && !selectedIndices.includes(randomIndex)) {
+                    selectedIndices.push(randomIndex);
+                }
+            }
+            
+            selectedIndices.forEach(index => {
+                const qaItem = document.createElement('div');
+                qaItem.style.marginBottom = '15px';
+                qaItem.style.padding = '10px';
+                qaItem.style.background = 'rgba(255,255,255,0.7)';
+                qaItem.style.borderRadius = '8px';
+                
+                const question = document.createElement('div');
+                question.style.fontWeight = 'bold';
+                question.style.marginBottom = '5px';
+                question.textContent = `${index + 1}. ${questions[index]}`;
+                
+                const answer = document.createElement('div');
+                answer.textContent = answers[index];
+                
+                qaItem.appendChild(question);
+                qaItem.appendChild(answer);
+                resultCard.appendChild(qaItem);
+            });
+            
+            const signature = document.createElement('div');
+            signature.style.marginTop = '20px';
+            signature.style.textAlign = 'right';
+            signature.style.fontStyle = 'italic';
+            signature.textContent = `—— ${userName}的无意义答卷`;
+            
+            resultCard.appendChild(signature);
+            resultContent.appendChild(resultCard);
+            
+            showPage('result');
+        }
+
+        // 生成截图
+        function generateScreenshot() {
+            const loader = document.querySelector('.loader');
+            const resultCard = document.getElementById('result-card');
+            
+            // 显示加载动画
+            loader.style.display = 'block';
+            
+            html2canvas(resultCard, {
+                backgroundColor: null,
+                scale: 2,
+                useCORS: true
+            }).then(canvas => {
+                // 隐藏加载动画
+                loader.style.display = 'none';
+                
+                const image = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.download = `${userName}-无意义100问.png`;
+                link.href = image;
+                link.click();
+                
+                showToast('图片已生成并下载');
+            }).catch(error => {
+                // 隐藏加载动画
+                loader.style.display = 'none';
+                console.error('生成截图失败:', error);
+                showToast('生成图片失败，请重试');
+            });
+        }
+
+        // 复制链接
+        function copyLink() {
+            const url = `${window.location.origin}${window.location.pathname}?name=${encodeURIComponent(userName)}`;
+            
+            // 使用现代 Clipboard API
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url).then(() => {
+                    showToast('链接已复制到剪贴板');
+                }).catch(err => {
+                    fallbackCopyTextToClipboard(url);
+                });
+            } else {
+                fallbackCopyTextToClipboard(url);
+            }
+        }
+
+        // 兼容旧浏览器的复制方法
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast('链接已复制到剪贴板');
+            } catch (err) {
+                showToast('复制失败，请手动复制链接');
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // 下载文字版
+        function downloadText() {
+            let textContent = `${userName}的无意义100问答卷\n\n`;
+            
+            for (let i = 0; i < questions.length; i++) {
+                textContent += `${i+1}. ${questions[i]}\n`;
+                textContent += `答: ${answers[i] || '未回答'}\n\n`;
+            }
+            
+            textContent += `—— ${userName}的无意义答卷\n`;
+            textContent += `生成时间: ${new Date().toLocaleString()}`;
+            
+            const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${userName}-无意义100问.txt`;
+            link.click();
+            
+            showToast('文字版已下载');
+        }
+
+        // 显示提示信息
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // 保存到本地存储
+        function saveToLocalStorage() {
+            const data = {
+                userName: userName,
+                answers: answers,
+                timestamp: new Date().getTime()
+            };
+            localStorage.setItem('meaningless100', JSON.stringify(data));
+        }
+
+        // 从本地存储加载
+        function loadFromLocalStorage() {
+            const dataStr = localStorage.getItem('meaningless100');
+            if (dataStr) {
+                try {
+                    const data = JSON.parse(dataStr);
+                    userName = data.userName || '';
+                    if (userName) {
+                        document.getElementById('name-input').value = userName;
+                    }
+                    
+                    // 恢复答案
+                    if (data.answers && data.answers.length === 100) {
+                        for (let i = 0; i < 100; i++) {
+                            answers[i] = data.answers[i] || '';
+                        }
+                        
+                        // 更新所有文本框
+                        document.querySelectorAll('textarea').forEach(textarea => {
+                            const index = parseInt(textarea.dataset.index);
+                            if (answers[index]) {
+                                textarea.value = answers[index];
+                            }
+                        });
+                    }
+                } catch (e) {
+                    console.error('加载本地数据失败:', e);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
